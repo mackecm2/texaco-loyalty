@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# Before executing any script we use cd so that relative paths work
+# according to a post on the php.net web site under include this
+# is an issue when using cli
+#
+# Update the sites data from the master - rsm2.rsmsecure.com
+# 
+
+cd /data/www/websites/texaco/RegularProcessing/DailyProcess
+/usr/local/bin/php -f updatesitedata.php >> /data/www/logs/UpdateSiteData.log 2>&1
+

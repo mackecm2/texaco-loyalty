@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# First check that this process is not already stuck
+LOCKFILE="/var/lock/ReconciliationReporting.lock"
+
+if [ -f $LOCKFILE ]; then   ###> do not run multiple instances at the same time
+        echo "LOCK File exists - Quitting"
+        exit 0
+fi
+
+touch $LOCKFILE
+
+cd /data/www/websites/texaco//RegularProcessing/MonthlyProcess/
+
+php -f ReconciliationReport.php 2>&1 | tee -a  /data/www/logs/CreateReports.log
+
+rm -vf $LOCKFILE

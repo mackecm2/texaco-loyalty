@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE> Management Page </TITLE>
+<META NAME="Generator" CONTENT="EditPlus">
+<META NAME="Author" CONTENT="">
+<META NAME="Keywords" CONTENT="">
+<META NAME="Description" CONTENT="">
+</HEAD>
+
+<BODY>
+	<H2>Management Pages</H2>
+	<li><a href="BillingEnquiry.php">Billing Page</a>
+	<li><a href="SitesData.html">Site Data Tree</a>
+	<li><a href="CheckReplication.php">Check Replication</a>
+	<li><a href="DataDictionary.php">Texaco Data Dictionary</a>
+	<li><a href="DataDictionary.php?DB=Reporting">Reporting Data Dictionary</a>
+	<li><a href='..\Reporting\ReportPage.php?Table=texaco.NewErrorLog&Fields=Count(*) as Errors&DrillOrder=!CreatedBy,!Date_format(CreationDate/,"%Y %m %d") as Date,!File,!ErrorString,LineNo&Reset=true'>New Error Log</a>
+	<li><a href="LastProcessDate.php">Last Process Date by Process</a>
+
+	<li><a href='..\Reporting\ReportPage.php?Table=texaco.FilesProcessed&Fields=Count(*) as Enties, sum(NewRecords) as NewRecords, sum(EndTime is not null) as Completed, sum(ErrorCount) as ErrorCount, sum(Duplicates) as Duplicates, sum(Bad) as Bad, sum(Warnings) as Warnings&DrillOrder=!CreatedBy,!FileName&NextIndex=!CreatedBy&WhereClause='>Processed Files</a>
+
+	<li><a href='..\Reporting\ReportPage.php?Table=Reporting.ReportLog&Fields=Count(*) as Enties &DrillOrder=!FileName,!CreationDate,!Comment&Reset=true'>Processed Files</a>
+	<li><a href='..\Reporting\ReportEditor.php'>ReportEditor</a>
+</BODY>
+</HTML>

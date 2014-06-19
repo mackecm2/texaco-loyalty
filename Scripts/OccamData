@@ -1,0 +1,42 @@
+#!/bin/sh
+#
+# Before executing any script we use cd so that relative paths work
+# according to a post on the php.net web site under include this
+# is an issue when using cli
+#
+#
+
+v=`date +"%Y_%m_%d"`
+echo `date '+%m/%d/%y %H:%M:%S'" /data/Scripts/OccamData started "`
+
+if [ $HOSTNAME == "dbtest1" ]; then
+	cd /data/Occam
+else
+	cd /data/mysql2/Occam
+	perl -pi -e's/\\N/\"NULL\"/g' /data/mysql2/Occam/StaffMembers.csv
+	perl -pi -e's/\\N/\"NULL\"/g' /data/mysql2/Occam/Members.csv
+	perl -pi -e's/\\N/\"NULL\"/g' /data/mysql2/Occam/CustomerRegistrations.csv
+	perl -pi -e's/\\N/\"NULL\"/g' /data/mysql2/Occam/SiteRegistrations.csv
+	perl -pi -e's/\\N/\"NULL\"/g' /data/mysql2/Occam/sites.csv
+	perl -pi -e's/\\N/\"NULL\"/g' /data/mysql2/Occam/sitedata.csv	
+fi
+
+# clear up the old zip file before creating the new one
+
+unlink data.zip
+
+zip -q data.zip *.csv
+
+
+if [ $HOSTNAME == "dbtest1" ]; then
+	scp data.zip chevron@rsm4:/data/Occam/data.zip
+else
+	# Send the file to the DRWeouWeb server
+	scp data.zip drweouweb:/data/Occam/data.zip	
+fi
+
+[ $? -ne 0 ] && { echo "####### E R R O R ###### Cannot scp to web server" ; exit 1; }
+
+rm -rf *.csv
+
+echo `date '+%m/%d/%y %H:%M:%S'" /data/Scripts/OccamData completed "`

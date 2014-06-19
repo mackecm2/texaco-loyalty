@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# First check that this process is not already stuck
+LOCKFILE="/var/lock/ReportingStartOfMonth.lock"
+
+if [ -f $LOCKFILE ]; then   ###> do not run multiple instances at the same time
+        echo "LOCK File exists - Quitting"
+        exit 0
+fi
+
+touch $LOCKFILE
+
+cd /data/www/websites/texaco/reportfiles
+
+OLDFILE="TxCounts.csv"
+
+if [ -f $OLDFILE ]; then 
+       unlink TxCounts.csv
+fi
+
+cd /data/www/websites/texaco/Reporting
+php -f CreateBillingReport.php 2>&1 | tee -a  /data/www/logs/CreateReports.log
+
+# Send the file
+
+cd /data/www/websites/texaco/mailsender
+php -f billingreportsender.php 2>&1 | tee -a  /data/www/logs/ReportSender.log
+
+rm -vf $LOCKFILE

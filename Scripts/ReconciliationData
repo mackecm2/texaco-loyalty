@@ -1,0 +1,47 @@
+#!/bin/sh
+#
+# Before executing any script we use cd so that relative paths work
+# according to a post on the php.net web site under include this
+# is an issue when using cli
+#
+#
+
+v=`date +"%Y_%m_%d"`
+echo "script started $v"
+
+
+# clear up the old files
+cd /data/Chevron/downloads
+unlink reconciliation$v.zip
+
+
+zip -q reconciliation$v.zip *.txt
+
+rm -rf *.txt
+
+
+
+s=`hostname` 
+  case $s
+  in
+    weoudbreports)	db="weoudemo"
+	;;
+	drdb1) db=" chevron@drweouweb"
+	;;
+	drdb2) db="chevron@drweouweb"
+	;;
+	db1) db="chevron@texaco"
+	;;
+	dbtest1) db="chevron@rsm4"		
+	;;			
+    *)	echo "invalid hostname $s!!!!"
+    exit
+	;;			
+  esac
+  
+  # Send the file to the DRWeouWeb server
+scp reconciliation$v.zip $db:/data/Chevron/downloads/reconciliation$v.zip
+
+
+echo "script completed $v"
+echo "system is $s"

@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE> Bonus Manager </TITLE>
+<script>
+	function Back()
+	{
+		window.history.back();
+	}
+	function Close()
+	{
+		window.close();
+	}
+</script>
+</HEAD>
+
+<BODY>
+	<button onclick="Back()">Back</button>
+	&nbsp;&nbsp;&nbsp;
+	<button onclick="Close()">Close</button>
+	
+	<br>Location : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<SPAN style="background-color: #d0cae6; align:right"><IMG SRC="../TabSheets/HlightedFirst.gif">Bonus Manager<IMG SRC="../TabSheets/HlightedLast.gif"></SPAN>
+	<br><a href="BonusEdit.html">Editing a Bonus</a>
+	<br><a href="PersonalCampaigns.html">Personal Campaigns</a>
+	
+	<H3>Bonus Management</H3>
+
+Several areas interact here to bring you a flexiable and powerful promotion managment wizard the downside being that if you get this wrong it can cause people to get bonuses they didn't expect or people to not get bonuses they did.
+
+<br>	On the manage screen you will see a sumary of the details of all the bonuses active in the system.
+
+	Different bonuses <b>apply to</B> different areas that and you can have <b>one</b> bonus Hit in <b>each</b> area for a single transaction.  The areas are:-.
+
+<li> <I>Product Value</I> is for promotions for spend on one product<sup>*</sup>.
+<li> <I>Product Quantity</I> is for per litre or per mars bar promotions<sup>*</sup>.
+<li> <I>Department</I> is not currently implemented.
+<li> <I>Total Spend</I> is for bonuses that use the total value of the transaction.  
+<li> <I>Visit</I> is for bonuses not related to spend value in any way.
+
+<br><sup>*</sup> These two form one area.
+<H3>Priority Management</H3>
+The first bonus to be applicable in an area is applied so the order of testing is important.
+<br>For this reason you can use the up and down arrows to alter the priority.
+</BODY>
+</HTML>

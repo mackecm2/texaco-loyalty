@@ -1,0 +1,28 @@
+#!/bin/sh
+#
+# Daily Process to check for the UK Fuels files
+#
+# get the file
+#
+
+# First check that this process is not already stuck
+LOCKFILE="/var/lock/CheckUKFuelsFiles.lock"
+
+if [ -f $LOCKFILE ]; then   ###> do not run multiple instances at the same time
+        echo "LOCK File exists - Quitting"
+        exit 0
+fi
+
+touch $LOCKFILE
+
+
+
+/usr/local/bin/ncftpget -f /data/www/websites/texaco/Scripts/ukfuels_ftp_login -a -DD /data/ukfuels/ "*.DAT" >> /data/www/logs/ukfuels_ftp.log 2>&1
+
+# Check it out
+
+cd /data/www/websites/texaco/FileProcessing/UKFuels
+php -f CheckUKFuelsFile.php 2>&1 | tee -a  /data/www/logs/UKFile.log
+
+
+rm -vf $LOCKFILE

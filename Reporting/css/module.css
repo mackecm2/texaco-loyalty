@@ -1,0 +1,159 @@
+.bodytext 
+{
+	font-family: "Trebuchet MS", Tahoma, Verdana, Arial;
+	font-size: 12px;
+	font-style: normal;
+	line-height: 22px;
+	font-weight: 400;
+	color: #333333;
+	text-decoration: none;
+}
+.HeaderMain {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 18px;
+	font-weight: 600;
+	color: #996666;
+	text-decoration: none;
+}
+
+.HeaderMainBlue {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 18px;
+	font-weight: 600;
+	color: #6699ff;
+	text-decoration: none;
+}
+
+.bodytextbold {
+
+	font-family: "Trebuchet MS", Tahoma, Verdana, Arial;
+	font-size: 12px;
+	font-style: normal;
+	line-height: 24px;
+	font-weight: 600;
+	color: #996666;
+	text-decoration: none;
+}
+.copyright {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 9px;
+	font-weight: 400;
+	color: #999999;
+	text-decoration: none;
+}
+.bodytextBrown {
+
+	font-family: "Trebuchet MS", Tahoma, Verdana, Arial;
+	font-size: 12px;
+	font-style: normal;
+	line-height: normal;
+	font-weight: 400;
+	color: #996633;
+	text-decoration: none;
+}
+.bodytextBrownForm {
+
+
+	font-family: "Trebuchet MS", Tahoma, Verdana, Arial;
+	font-size: 12px;
+	font-style: normal;
+	line-height: 12px;
+	font-weight: 400;
+	color: #996633;
+	text-decoration: none;
+}
+.errormessage {
+
+	font-family: "Trebuchet MS", Tahoma, Verdana, Arial;
+	font-size: 12px;
+	font-style: normal;
+	line-height: 22px;
+	font-weight: 400;
+	color: #FF0000;
+	text-decoration: none;
+}
+
+.headertext {
+	font-family: "Trebuchet MS", Tahoma, Verdana, Arial;
+	font-size: 12px;
+	font-weight: 600;
+	color: #333366;
+	text-decoration: none;
+}
+
+.headertextblue {
+	font-family: "Trebuchet MS", Tahoma, Verdana, Arial;
+	font-size: 12px;
+	font-weight: 600;
+	color: #6699FF;
+	text-decoration: none;
+}
+
+.banner {
+	font-family: "Trebuchet MS", Tahoma, Verdana, Arial;
+	font-size: 24px;
+	font-weight: 400;
+	color: #FFFFCC;
+	text-decoration: none;
+}
+.mainmenu {
+	font-family: "Trebuchet MS", Tahoma, Verdana, Arial;
+	font-size: 11px;
+	line-height: normal;
+	font-weight: 400;
+	color: #FFFFFF;
+	text-decoration: none;
+}
+
+.bodytexttiny {
+
+	font-family: "Trebuchet MS", Tahoma, Verdana, Arial;
+	font-size: 9px;
+	font-style: normal;
+	line-height: 22px;
+	font-weight: 400;
+	color: #333333;
+	text-decoration: none;
+}
+.HeaderMainMauve {
+
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 18px;
+	font-weight: 600;
+	color: #9999ff;
+	text-decoration: none;
+}
+.formtextsmall {
+
+	font-family: "Trebuchet MS", Tahoma, Verdana, Arial;
+	font-size: 9px;
+	font-style: normal;
+	line-height: 22px;
+	font-weight: 400;
+	color: #333333;
+	text-decoration: none;
+}
+.HeaderMainGreen {
+
+
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 18px;
+	font-weight: 600;
+	color: #006666;
+	text-decoration: none;
+}
+.HeaderMainOrange {
+
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 18px;
+	font-weight: 600;
+	color: #FF9900;
+	text-decoration: none;
+}
+.MenuBar  {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	border:	0px;
+	cellpadding: 0;
+	cellspacing: 5;
+	background-color : #99CCCC;
+}

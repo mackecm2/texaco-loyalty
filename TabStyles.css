@@ -1,0 +1,90 @@
+.celliconfront
+{
+	BORDER-TOP-STYLE: none; 
+	BORDER-RIGHT-STYLE: none; 
+	BORDER-LEFT-STYLE: none; 
+	BORDER-BOTTOM-STYLE: none;
+	vertical-Align: bottom;
+	padding: 0;
+	BACKGROUND-COLOR: #ffffe0
+}
+.celliconrear
+{
+	BORDER-TOP-STYLE: none; 
+	BORDER-RIGHT-STYLE: none; 
+	BORDER-LEFT-STYLE: none; 
+	BORDER-BOTTOM-STYLE: inset;
+	vertical-Align: bottom;
+	padding: 0;
+	BACKGROUND-COLOR: #ffffe0
+}
+.buttonfront
+{
+    MARGIN: 0px;
+	BORDER-WIDTH: 0px;
+	BACKGROUND-COLOR: #d0cae6;
+}
+.buttonrear
+{
+	MARGIN: 0px;
+	BORDER-WIDTH: 0px;
+	BACKGROUND-COLOR: lavender;
+}
+.cellfront
+{
+	BORDER-TOP-STYLE: outset; 
+	BORDER-BOTTOM-STYLE: none; 
+	BORDER-RIGHT-STYLE: none; 
+	BORDER-LEFT-STYLE: none;
+	BACKGROUND-COLOR: #ffffe0;
+	padding: 0;
+	vertical-Align: bottom;
+}
+.cellrear
+{
+	BORDER-TOP-STYLE: thin solid black; 
+	BORDER-RIGHT-STYLE: none; 
+	BORDER-LEFT-STYLE: none; 
+	BORDER-BOTTOM-STYLE: inset;
+	vertical-Align: bottom;
+	padding: 0;
+	BACKGROUND-COLOR: #ffffe0
+}
+.padding
+{
+	BORDER-TOP-STYLE: none; 
+	BORDER-RIGHT-STYLE: none; 
+	BORDER-LEFT-STYLE: none; 
+	BORDER-BOTTOM-STYLE: inset;
+	vertical-Align: bottom;
+	padding: 0;
+	BACKGROUND-COLOR: #ffffe0
+	
+}
+.desktop
+{
+	font-family:	Arial;
+	BORDER-RIGHT: none; 
+	BORDER-TOP: none; 
+	BORDER-LEFT: none; 
+	BORDER-BOTTOM: none; 
+	BACKGROUND-COLOR: #ffffe0
+}
+
+legend
+{
+	font-weight: bold;
+}
+
+.FieldLabel
+{
+	font-size: smaller;
+}
+
+fieldset
+{
+	border-width: 3px;
+	border-style: thin inset;
+	margin: 5px;
+}
+

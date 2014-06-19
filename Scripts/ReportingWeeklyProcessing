@@ -1,0 +1,31 @@
+#!/bin/sh
+#
+# Before executing any script we use cd so that relative paths work
+# according to a post on the php.net web site under include this
+# is an issue when using cli
+#
+
+# First check that this process is not already stuck
+LOCKFILE="/var/lock/MonthlyReports.lock"
+
+if [ -f $LOCKFILE ]; then   ###> do not run multiple instances at the same time
+        echo "LOCK File exists - Quitting"
+        exit 0
+fi
+
+touch $LOCKFILE
+
+
+cd /data/www/websites/texaco/Reporting
+#php -f CreateLiablityReport.php 2>&1 | tee -a  /data/www/logs/Weekly.log ... Mantis 2505 removed 27 10 10  MRM 
+
+php -f CreateRecruitmentLeages.php 2>&1 | tee -a  /data/www/logs/Weekly.log
+
+php -f CreateTransactionReport.php  2>&1 | tee -a  /data/www/logs/Weekly.log
+
+php -f CreateLapsedLiablityReport.php 2>&1 | tee -a  /data/www/logs/Weekly.log
+
+cd /data/www/websites/texaco/RegularProcessing/WeeklyProcess
+php -f CreateLiabilityWorkingTables.php 2>&1 | tee -a  /data/www/logs/Weekly.log
+
+rm -vf $LOCKFILE

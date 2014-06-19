@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# Monthly Process to check for the Fast Fuels Data file
+# Runs on last Tuesday of every month
+# Checks that yesterday (Monday) was the last Monday of the month 
+#
+# First check that this process is not already stuck
+LOCKFILE="/var/lock/CheckFFDataFile.lock"
+
+if [ -f $LOCKFILE ]; then   ###> do not run multiple instances at the same time
+        echo "LOCK File exists - Quitting"
+        exit 0
+fi
+
+touch $LOCKFILE
+
+YESTERDAY=`date +%d -d "-1 day"`
+AWEEKFROMYESTERDAY=`date +%d -d "+6 day"`
+
+# See if the number of the day (e.g. 5th) in a week's time is less than yesterday's number (e.g. 29th)
+
+if [ $AWEEKFROMYESTERDAY -lt $YESTERDAY ]; then
+
+	cd /data/www/websites/texaco/FileProcessing/UKFuels
+	php -f CheckFFDataFile.php 2>&1 | tee -a  /data/www/logs/UKFile.log
+	
+fi
+
+rm -vf $LOCKFILE

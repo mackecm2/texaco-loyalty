@@ -1,0 +1,44 @@
+#!/bin/sh
+#
+# Before executing any script we use cd so that relative paths work
+# according to a post on the php.net web site under include this
+# is an issue when using cli
+#
+
+#Copy to another location
+
+cd /data/www/websites/texaco/FileProcessing/Compower
+DATE=`date +%y%m%d`
+newfilename="DLXCLMSTARGCC"$DATE".DAT"
+cp /data/compower/downloads/DLXCLMSTARGCC.DAT /data/www/websites/texaco/FileProcessing/Processed/Compower/HomeSiteFiles/$newfilename
+
+# Zip the points balance file
+
+cd  /data/compower/downloads
+unlink homes*.zip
+zip -q homes$DATE.zip DLXCLMSTARGCC.DAT
+
+# Send the points balance file
+#--------------------------------------------------------------------
+echo `date '+%m/%d/%y %H:%M:%S'" Sending Atos Home Site File "`
+
+HOMESITEFILE="/data/compower/downloads/homes$DATE.zip"
+
+if [ -f $HOMESITEFILE ]; then
+	# Send the file to Atos via sftp
+	cd /data/www/websites/texaco/Scripts
+	sftp -b /data/www/websites/texaco/Scripts/Atossftp rsm@212.248.231.23
+	
+	  if [ $? -ne 0 ];then
+	    echo "####### E R R O R ###### Cannot sftp to Atos"
+	  else
+	    echo "  "
+		echo `date '+%m/%d/%y %H:%M:%S'" Atos Home Site File sent "`
+	  fi
+else
+	 echo "####### E R R O R ###### No homes.zip file to send to Atos"
+fi
+
+
+#--------------------------------------------------------------------  
+

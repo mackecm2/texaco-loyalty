@@ -1,0 +1,95 @@
+#!/bin/sh
+#
+# Before executing any script we use cd so that relative paths work
+# according to a post on the php.net web site under include this
+# is an issue when using cli
+#
+# Write a new Bonus algorithum
+# 
+
+# First check that this process is not already stuck
+LOCKFILE="/var/lock/EndOfDay.lock"
+
+if [ -f $LOCKFILE ]; then   ###> do not run multiple instances at the same time
+        echo "LOCK File exists - Quitting"
+        exit 0
+fi
+
+touch $LOCKFILE
+
+cd /data/www/websites/texaco/FileProcessing/General
+php -f WriteAlgo.php 2>&1 | tee -a  /data/www/logs/WriteAlgo.log
+
+# Process the compower files
+
+d=`date +"%Y%m%d"`
+e=`date +"%Y%m"`
+
+cd  /data/compower/uploads
+cat RSMCSV$d.DAT >> /data/compower/uploads/RSMCSVDATA.DAT
+rm -rf RSMCSV$d.DAT
+
+cd /data/www/websites/texaco/FileProcessing/FIS
+php -f FileProcess.php 2>&1 | tee -a /data/www/logs/FISFile.log
+
+cd /data/www/websites/texaco/FileProcessing/Compower
+php -f FileProcess.php 2>&1 | tee -a /data/www/logs/CompowerFile.log
+
+
+
+
+# Fetch the Uk fuels files
+# Reads ftp login information from a separate file for security
+# Will download all files ending in .DAT and deletes them from the server if download is successful
+# Flags used:
+# -f filename: use filename for ftp server & login details
+# -a: use ascii mode
+# -DD: delete files from remote server on successful download
+
+/usr/local/bin/ncftpget -f /data/www/websites/texaco/Scripts/ukfuels_ftp_login -a -DD /data/ukfuels/ "*.DAT" >> /data/www/logs/ukfuels_ftp.log 2>&1
+
+# Process any uk fuels files
+cd /data/www/websites/texaco/FileProcessing/UKFuels
+php -f FileProcess.php 2>&1 | tee -a  /data/www/logs/UKFile.log
+
+# Print out last seven days worth of error messages
+php -f DisplayErrorLog.php 2>&1 | tee -a  /data/www/logs/UKFile.log
+
+# Produce the points balance file ----------------------------------
+# This step is also replicated in the EndOfWeek script ..... any changes made here MUST be replicated in EndOfWeek    MRM 30/05/08
+#
+#
+cd /data/www/websites/texaco/FileProcessing/Compower
+php -f ProduceFile.php 2>&1 | tee -a  /data/www/logs/Homesites.log
+#--------------------------------------------------------------------
+cd /data/www/websites/texaco/FileProcessing/FIS
+php -f ProduceFile.php 2>&1 | tee -a  /data/www/logs/Homesites.log
+#--------------------------------------------------------------------
+#
+# Send points balance file to Atos via sftp - MRM 26/03/10
+#
+sh /data/www/websites/texaco/Scripts/AtosDataSender
+#--------------------------------------------------------------------  
+
+# Produce the interim month report
+
+cd /data/www/websites/texaco/RegularProcessing/DailyProcess
+php -f HouseKeeping.php 2>&1 | tee -a  /data/www/logs/Housekeeping.log
+
+# calculate bonus points for Staff Incentive
+#cd /data/www/websites/texaco/RegularProcessing/StaffIncentive
+#php -f BonusCalc.php 2>&1 | tee -a /data/www/logs/StaffIncentive.log
+
+#       Create the daily StaffMembers Table
+#cd /data/www/websites/texaco/RegularProcessing/DailyProcess
+#php -f CreateStaffMembersTable.php 2>&1 | tee -a  /data/www/logs/StaffIncentive.log
+
+#       Run the daily search for pending Promotions
+cd /data/www/websites/texaco/RegularProcessing/DailyProcess
+php -f PromotionsCheck.php 2>&1 | tee -a  /data/www/logs/Promotions.log
+
+#       Run the daily data cleanse report
+cd /data/www/websites/texaco/Issues/Accounts
+php -f  DataCleanseReports.php 2>&1 | tee -a  /data/www/logs/DataCleanse.log
+
+rm -vf $LOCKFILE

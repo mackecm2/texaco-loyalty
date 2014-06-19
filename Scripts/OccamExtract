@@ -1,0 +1,34 @@
+#!/bin/sh
+#
+# Before executing any script we use cd so that relative paths work
+# according to a post on the php.net web site under include this
+# is an issue when using cli
+#
+# 
+echo `date '+%m/%d/%y %H:%M:%S'" /data/www/websites/texaco/Scripts/OccamExtract started "`
+
+# First check that the last run cleaned up properly
+
+LOCKFILE="/data/Occam/AccountCards.csv"
+
+if [ -f $LOCKFILE ]; then   ###> clean up before running this process
+        echo "CSV files left over from last run - Quitting"
+        exit 0
+fi
+
+# clear up the old files, if necessary
+
+cd /data/Occam
+
+OLDFILE="data.zip"
+
+if [ -f $OLDFILE ]; then   
+        unlink data.zip
+fi
+
+# Produce the extract files
+
+cd /data/www/websites/texaco/FileProcessing/OccamExtract
+php -f ProduceFile.php 2>&1 | tee -a  /data/www/logs/OccamExtract.log
+
+echo `date '+%m/%d/%y %H:%M:%S'" /data/www/websites/texaco/Scripts/OccamExtract completed "`

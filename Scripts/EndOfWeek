@@ -1,0 +1,46 @@
+#!/bin/sh
+#
+# Before executing any script we use cd so that relative paths work
+# according to a post on the php.net web site under include this
+# is an issue when using cli
+
+# First check that this process is not already stuck
+LOCKFILE="/var/lock/EndOfWeek.lock"
+
+if [ -f $LOCKFILE ]; then   ###> do not run multiple instances at the same time
+        echo "LOCK File exists - Quitting"
+        exit 0
+fi
+
+touch $LOCKFILE
+
+
+# Process Monthly sums
+
+cd /data/www/websites/texaco/RegularProcessing/WeeklyProcess
+php -f HomeSiteAllocate.php 2>&1 | tee -a  /data/www/logs/Weekly.log
+
+# Produce the points balance file ----------------------------------
+# This step is also replicated in the EndOfDay script ..... any changes made here MUST be replicated in EndOfDay    MRM 30/05/08
+#
+#
+cd /data/www/websites/texaco/FileProcessing/Compower
+php -f ProduceFile.php 2>&1 | tee -a  /data/www/logs/Homesites.log
+cd /data/www/websites/texaco/FileProcessing/FIS
+php -f ProduceFile.php 2>&1 | tee -a  /data/www/logs/Homesites.log
+#--------------------------------------------------------------------
+#
+# Send points balance file to Atos via sftp - MRM 26/03/10
+#
+sh /data/www/websites/texaco/Scripts/AtosDataSender
+#--------------------------------------------------------------------  
+
+# Create Liability Working Tables
+#
+# -- MRM 24/08/2010 - removed - Mantis 2513 
+#
+#cd /data/www/websites/texaco/RegularProcessing/WeeklyProcess
+#php -f CreateLiabilityWorkingTables.php 2>&1 | tee -a  /data/www/logs/Weekly.log
+
+
+rm -vf $LOCKFILE

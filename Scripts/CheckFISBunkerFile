@@ -1,0 +1,50 @@
+#!/bin/sh
+#
+# Monthly Process to check for the FIS Bunker Card Data file
+# Runs on the 5th of every month
+#
+
+echo `date '+%y/%m/%d %H:%M:%S'" /data/www/websites/texaco/Scripts/CheckFISBunkerFile started "`
+
+# First check that this process is not already stuck
+LOCKFILE="/var/lock/CheckFISBunkerFile.lock"
+
+if [ -f $LOCKFILE ]; then   ###> do not run multiple instances at the same time
+        echo "LOCK File exists - Quitting"
+        exit 0
+fi
+
+touch $LOCKFILE
+
+YEAR=`date +%Y`
+MONTH=`date +%m | sed -e 's/^0//g'`
+LSTMONTH=$(($MONTH-1))
+
+if (( MONTH == 1)); then
+	LSTMONTH=12
+	YEAR=$((YEAR-1))
+fi
+
+if ((LSTMONTH < 10)); then
+	LSTMONTH="0"${LSTMONTH} 
+fi
+
+FILE="/data/FIS/uploads/STARREWARDS_BUNKER_${YEAR}${LSTMONTH}.csv"
+
+cd /data/www/websites/texaco/FileProcessing/FIS
+php -f CheckFISBunkerFile.php 2>&1 | tee -a  /data/www/logs/FISFile.log
+
+if [ -f $FILE ]; then  
+    
+    echo `date '+%y/%m/%d %H:%M:%S'" moving $FILE into /data/compower/uploads/RSMCSVDATA.DAT... "`
+    
+	cd  /data/FIS/uploads
+	cat $FILE >> /data/compower/uploads/RSMCSVDATA.DAT
+	rm -rf $FILE
+else
+	echo $FILE not found - processing terminated.
+fi
+
+rm -vf $LOCKFILE
+
+echo `date '+%y/%m/%d %H:%M:%S'" /data/www/websites/texaco/Scripts/CheckFISBunkerFile completed "`

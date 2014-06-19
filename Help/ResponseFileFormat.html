@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Card request file</TITLE>
+<META NAME="Generator" CONTENT="EditPlus">
+<META NAME="Author" CONTENT="">
+<META NAME="Keywords" CONTENT="">
+<META NAME="Description" CONTENT="">
+<script>
+	function Back()
+	{
+		window.history.back();
+	}
+	function Close()
+	{
+		window.close();
+	}
+
+</script>
+</HEAD>
+
+<BODY>
+	<button onclick="Back()">Back</button>
+	&nbsp;&nbsp;&nbsp;
+	<button onclick="Close()">Close</button>
+	
+	<br>Location : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<SPAN style="background-color: #d0cae6; align:right"><IMG SRC="../TabSheets/HlightedFirst.gif">End Of Day<IMG SRC="../TabSheets/HlightedLast.gif"></SPAN>&nbsp;&nbsp;&nbsp;<button>CardRequest</button>
+	<br><a href="LoadFile.html">Loading Files</a>
+	<br><a href="CardRequests.html">Card Request File</a>
+	<h3>Format of response file</h3>
+	The response file should be a csv file and must have the following:
+	<ul>
+	<li>column names in the first row of the file;
+	<li>a column called CardNo specifying the new card number;
+	<li>a column called RefNo that is the original reference number given to the request in the 
+	output file.</ul>
+	Any other columns will be ignored.
+	
+	
+</BODY>
+</HTML>

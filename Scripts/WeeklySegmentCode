@@ -1,0 +1,58 @@
+#!/bin/sh
+#
+# Before executing any script we use cd so that relative paths work
+# according to a post on the php.net web site under include this
+# is an issue when using cli
+
+LOCKFILE="/var/lock/WeeklySegmentCode.lock"
+if [ -f $LOCKFILE ]; then   ###> do not run multiple rsync at the same time
+	echo "LOCK File exists - Quitting"   
+        exit 0
+fi
+
+
+
+touch $LOCKFILE 
+
+
+
+
+# Process Monthly sums
+
+cd /data/www/websites/texaco/RegularProcessing/WeeklyProcess
+php -f CreateMonthlySums.php 2>&1 | tee -a  /data/www/logs/Weekly.log
+
+#
+#		11/12/2009 MRM		Mantis 1426 
+#		CreateSegments also runs on the first day of the month as part of the MonthlyReports process
+#
+#
+
+LOCKFILE2="/var/lock/StartOfMonth.lock"
+if [ ! -f $LOCKFILE2 ]; then
+
+
+#
+#		05/08/2010 MRM		Mantis 2444 
+#		If Saturday is the last day of the month (in other words if tomorrow is the first of the month) then 
+#		don't bother running CreateSegments as it will be run tomorrow
+#
+
+	TOMORROW=$(date '+%d' --date="-1 days ago")
+	
+	if [ $TOMORROW -eq 1 ]; then
+		echo "Skipping CreateSegments - we will run it tomorrow"
+	else
+	    cd /data/www/websites/texaco/Reporting
+		php -f CreateSegments.php 2>&1 | tee -a  /data/www/logs/Weekly.log
+		
+		cd /data/www/websites/texaco/Issues/Accounts
+		php -f NoSegmentCode.php 2>&1 | tee -a  /data/www/logs/Weekly.log
+	
+	fi
+fi
+
+
+#--------------------------------------------------------------------  
+
+rm -vf $LOCKFILE

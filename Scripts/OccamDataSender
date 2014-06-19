@@ -1,0 +1,50 @@
+#!/bin/sh
+#
+# Before executing any script we use cd so that relative paths work
+# according to a post on the php.net web site under include this
+# is an issue when using cli
+#
+#
+
+echo `date '+%m/%d/%y %H:%M:%S'" /data/www/websites/texaco/Scripts/OccamDataSender started "`
+
+v=`date +"%Y_%m_%d"`
+w=`date +"%Y_%m"`
+
+cd /data/Occam
+
+FRAUDFILES="/data/www/websites/texaco/FileProcessing/Processed/FraudReports/*$w*.zip"
+
+if [ -f $FRAUDFILES ]; then
+        cp /data/www/websites/texaco/FileProcessing/Processed/FraudReports/*$w*.* .
+		cp /data/www/websites/texaco/FileProcessing/Processed/UKFuels/FastFuel/Fast*$w*.* .
+		
+		zip data.zip *.csv
+		zip data.zip Fraud*.zip
+		
+		rm -rf *.csv
+		rm -rf Fraud*.zip  
+fi
+
+mv data.zip data$v.zip
+
+if [ $HOSTNAME == "rsm4.rsmsecure.com" ]; then
+	# clear up the old files
+	cd /data/Occam
+	mv data$v.zip /data/Occam/SentFiles/
+else
+	# Send the file to Occam via sftp
+	cd /data/www/websites/texaco/Scripts
+	sftp -b /data/www/websites/texaco/Scripts/occamsftp rsm_sftp@87.102.97.231
+	
+	  if [ $? -ne 0 ];then
+	    echo "####### E R R O R ###### Cannot sftp to Occam"
+	  else
+	    # clear up the old files
+		cd /data/Occam
+		mv data$v.zip /data/Occam/SentFiles/
+	  fi
+fi
+
+
+echo `date '+%m/%d/%y %H:%M:%S'" /data/www/websites/texaco/Scripts/OccamDataSender completed "`

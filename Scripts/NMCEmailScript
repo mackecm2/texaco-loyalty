@@ -1,0 +1,31 @@
+#!/bin/sh
+#
+# Before executing any script we use cd so that relative paths work
+# according to a post on the php.net web site under include this
+# is an issue when using cli
+#
+
+# clear out the directory
+rm -f /data/ecircle/download/*.zip
+rm -f /data/ecircle/download/*.csv
+
+date +"Script Ran at %Y %m %d" >>  /data/www/logs/NewMemberCycleExport.log
+
+cd /data/www/websites/texaco/RegularProcessing/WeeklyProcess
+php -f NewMemberCycleExport.php 2>&1 | tee -a  /data/www/logs/NewMemberCycleExport.log
+
+# Zip the points balance file
+
+cd  /data/ecircle/download
+zip -q nmc_week1.zip nmc_week1.csv
+zip -q nmc_week2.zip nmc_week2.csv
+
+# Send the points balance file
+
+ncftpput -f /data/www/websites/texaco/Scripts/ecircle_ftp_login import /data/ecircle/download/*.zip >> /data/www/logs/NewMemberCycleExport.log 2>&1
+
+# Archiove the file
+
+v=`date +"%Y_%m_%d"`
+mv nmc_week1.zip  "/data/www/websites/texaco/FileProcessing/Processed/ecircle/nmc_week1$v.zip" 
+mv nmc_week2.zip  "/data/www/websites/texaco/FileProcessing/Processed/ecircle/nmc_week2$v.zip" 

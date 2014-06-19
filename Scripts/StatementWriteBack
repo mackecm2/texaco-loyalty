@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# Before executing any script we use cd so that relative paths work
+# according to a post on the php.net web site under include this
+# is an issue when using cli
+# 
+
+# First check that this process is not already stuck
+LOCKFILE="/var/lock/StatementWriteBack.lock"
+
+if [ -f $LOCKFILE ]; then   ###> do not run multiple instances at the same time
+        echo "LOCK File exists - Quitting"
+        exit 0
+fi
+
+touch $LOCKFILE
+
+cd /data/www/websites/texaco/Issues/Statements
+php -f WriteBackGoneAways.php 2>&1 | tee -a  /data/www/logs/Statement.log
+
+php -f WriteBackDeceased.php 2>&1 | tee -a  /data/www/logs/Statement.log
+
+php -f WriteBackStatementData.php 2>&1 | tee -a  /data/www/logs/Statement.log
+
+
+## RetroBonus2010.php
+
+
+rm -vf $LOCKFILE

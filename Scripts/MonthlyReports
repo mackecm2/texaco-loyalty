@@ -1,0 +1,108 @@
+#!/bin/sh
+#
+# Before executing any script we use cd so that relative paths work
+# according to a post on the php.net web site under include this
+# is an issue when using cli
+#
+v=`date +"%Y_%m_%d"`
+
+# First check that this process is not already stuck
+LOCKFILE="/var/lock/MonthlyReports.lock"
+
+if [ -f $LOCKFILE ]; then   ###> do not run multiple instances at the same time
+        echo "LOCK File exists - Quitting"
+        exit 0
+fi
+
+touch $LOCKFILE
+
+
+
+#------------------------------------------------------------------------------------------------------------------------------
+#     F A S T   F U E L  F R A U D   R E P O R T
+#------------------------------------------------------------------------------------------------------------------------------
+
+cd /data/www/websites/texaco/RegularProcessing/MonthlyProcess
+php -f fastfuelfraudreport.php 2>&1 > /data/www/websites/texaco/FileProcessing/Processed/UKFuels/FastFuel/FastFuelReport$v.csv
+
+filename="/data/www/websites/texaco/FileProcessing/Processed/UKFuels/FastFuel/FastFuelReport$v.csv"
+
+line_count=`wc -l $filename | awk {'print$1'}`
+
+if [ -e $filename ]; then
+	if [ $line_count -gt 100 ]; then
+	    # cleanup the files
+		cd /data/ukfuels
+		zip -q FFDATA.zip FFDATA.DAT
+		mv FFDATA.zip  "/data/www/websites/texaco/FileProcessing/Processed/UKFuels/FastFuel/FFDATA$v.zip"
+		rm -rf FFDATA.DAT
+		cd /data/www/websites/texaco/mailsender
+		php -f fastfuelreportsender.php 2>&1 | tee -a  /data/www/logs/ReportSender.log
+	else
+		echo "Error: line count < 100 in Fast Fuel Reporting. Implies no FFDATA.DAT file. Please investigate.\n"	
+	fi 
+else
+	echo "Failure in Fast Fuel Reporting - $filename not found. Please investigate.\n"	
+fi 
+#------------------------------------------------------------------------------------------------------------------------------
+#     F R A U D   R E P O R T
+#------------------------------------------------------------------------------------------------------------------------------
+
+
+cd /data/www/websites/texaco/RegularProcessing/MonthlyProcess
+php -f FraudReport.php 2>&1 > /data/www/websites/texaco/FileProcessing/Processed/FraudReports/FraudReport$v.csv
+
+filename="/data/www/websites/texaco/FileProcessing/Processed/FraudReports/FraudReport$v.csv"
+
+line_count=`wc -l $filename | awk {'print$1'}`
+
+if [ -e $filename ]; then
+	if [ $line_count -gt 100 ]; then
+		# cleanup the files
+		cd /data/www/websites/texaco/FileProcessing/Compower/
+		zip -q FraudData.zip RSMCSVDATA.DAT
+		mv FraudData.zip  "/data/www/websites/texaco/FileProcessing/Processed/FraudReports/FraudData$v.zip"
+		rm -rf RSMCSVDATA.DAT
+		cd /data/www/websites/texaco/mailsender
+		php -f fraudreportsender.php 2>&1 | tee -a  /data/www/logs/ReportSender.log
+	else
+		echo "Error: line count < 100 in Fraud Reporting. Implies no RSMCSVDATA.DAT file. Please investigate.\n"		
+	fi 
+else
+	echo "Failure in Fraud Reporting - $filename not found. Please investigate.\n"	
+fi
+#------------------------------------------------------------------------------------------------------------------------------
+#     M O N T H L Y   S E C U R I T Y  R E P O R T
+#------------------------------------------------------------------------------------------------------------------------------
+
+
+# Produce the Monthly Security Reports
+
+cd /data/www/websites/texaco/Reporting
+php -f CreateReports.php 2>&1 | tee -a  /data/www/logs/CreateReports.log
+
+filename='/data/www/websites/texaco/reportfiles/StoppedAccounts.csv'
+
+line_count=`wc -l $filename | awk {'print$1'}`
+
+if [ -e $filename ]; then
+	if [ $line_count -gt 100 ]; then
+		# Zip the StoppedAccounts file
+		cd /data/www/websites/texaco/reportfiles
+		unlink StoppedAccounts.zip
+		unlink HighFrequencyTransactions.zip
+		zip -q StoppedAccounts.zip StoppedAccounts.csv
+		zip -q HighFrequencyTransactions.zip HighFrequencyTransactions.csv
+		
+		# Send the file
+		cd /data/www/websites/texaco/mailsender
+		php -f reportsender.php 2>&1 | tee -a  /data/www/logs/ReportSender.log
+	else
+		echo "Error: line count < 100 in StoppedAccounts.csv for Security Report. Please investigate.\n"	
+	fi 
+else
+	echo "Failure in Security Report - $filename not found. Please investigate.\n"		
+fi
+
+
+rm -vf $LOCKFILE

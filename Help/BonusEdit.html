@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE> Bonus Manager </TITLE>
+<script>
+	function Back()
+	{
+		window.history.back();
+	}
+	function Close()
+	{
+		window.close();
+	}
+</script>
+</HEAD>
+
+<BODY>
+	<button onclick="Back()">Back</button>
+	&nbsp;&nbsp;&nbsp;
+	<button onclick="Close()">Close</button>
+	
+	<br>Location : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<SPAN style="background-color: #d0cae6; align:right"><IMG SRC="../TabSheets/HlightedFirst.gif">Bonus Manager<IMG SRC="../TabSheets/HlightedLast.gif">
+	<br><a href="BonusManager.html">Bonus Manager</a>
+	<br><a href="PersonalCampaigns.html">Personal Campaigns</a>
+	
+	<H3>Bonus Edit</H3>
+
+<li> <I>Product Value</I> is for promotions for spend on one product<sup>*</sup>.
+<li> <I>Product Quantity</I> is for per litre or per mars bar<sup>*</sup>.
+<li> <I>Department</I> is not currently implemented.
+<li> <I>Period Spend</I> For personal campaign bonuses envolving a minimum spend in a period.
+<li> <I>Total Spend</I> is for bonuses that use the total value of the transaction.  
+<li> <I>Visit</I> is for bonuses not related to spend value in any way.
+
+<br><sup>*</sup> These two form one area.
+<br>All bonuses are applied in order with any bonus marked as excluded having the relevant spend excluded from other calculations.
+<br>This means that if you have a double bonus not marked as excluded then the double will be applied and then the standard giving a triple bonus.
+</BODY>
+</HTML>
